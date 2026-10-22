@@ -117,13 +117,16 @@ class content_generator {
 
         $ai = ai_client::from_config();
         $system = 'Eres un redactor de contenido educativo. Responde EXCLUSIVAMENTE con un objeto JSON valido '
-            . '(sin texto adicional, sin markdown) con la forma {"title":"...","content":"..."} donde "content" es '
-            . 'HTML sencillo (usa <p>, <h3>, <ul>, <li>, <strong>) con el desarrollo completo del tema.';
+            . '(sin texto adicional, sin markdown) con la forma {"title":"...","content":"...","question":"..."} '
+            . 'donde "content" es HTML sencillo (usa <p>, <h3>, <ul>, <li>, <strong>) con el desarrollo completo '
+            . 'del tema, y "question" es una pregunta de comprensión o reflexión (texto simple, sin HTML) sobre '
+            . 'ese contenido.';
         $user = "Título propuesto: {$title}\nTema/instrucciones: {$topic}\nIdioma: español.";
 
         $data = $ai->generate_json($system, $user);
         $name = clean_param((string) ($data['title'] ?? $title), PARAM_TEXT);
         $content = clean_param((string) ($data['content'] ?? ''), PARAM_CLEANHTML);
+        $question = clean_param((string) ($data['question'] ?? ''), PARAM_TEXT);
 
         if ($name === '') {
             $name = $title;
@@ -131,12 +134,27 @@ class content_generator {
         if ($content === '') {
             throw new \moodle_exception('error_aiempty', 'local_coursegenerator');
         }
+        if ($question === '') {
+            $question = get_string('defaultquestion', 'local_coursegenerator');
+        }
+
+        // Each block keeps its text in a single wrapper element right after the heading,
+        // so the tts.js module can find it via h3.nextElementSibling and read it aloud.
+        $pagecontent = html_writer::div(
+            html_writer::tag('h3', get_string('sectioncontent', 'local_coursegenerator'))
+            . html_writer::div($content, 'coursegenerator-tts-text'),
+            'coursegenerator-tts-block'
+        ) . html_writer::div(
+            html_writer::tag('h3', get_string('sectionquestion', 'local_coursegenerator'))
+            . html_writer::div(html_writer::tag('p', s($question)), 'coursegenerator-tts-text'),
+            'coursegenerator-tts-block'
+        );
 
         $moduleinfo = self::create_module($course, 'page', $sectionnum, [
             'name' => $name,
             'intro' => '',
             'introformat' => FORMAT_HTML,
-            'content' => $content,
+            'content' => $pagecontent,
             'contentformat' => FORMAT_HTML,
             'display' => RESOURCELIB_DISPLAY_AUTO,
             'printintro' => 0,

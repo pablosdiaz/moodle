@@ -76,3 +76,31 @@ function local_coursegenerator_extend_navigation_course($coursenode, $course, $c
         new pix_icon('i/report', '')
     );
 }
+
+/**
+ * Adds the text-to-speech button (with pause/resume) under the educational
+ * content and question blocks that content_generator::generate_page() creates.
+ *
+ * @return string always empty, this callback only queues JS.
+ */
+function local_coursegenerator_before_footer() {
+    global $PAGE;
+
+    if (!$PAGE->cm || $PAGE->cm->modname !== 'page') {
+        return '';
+    }
+
+    $headings = [
+        'content' => get_string('sectioncontent', 'local_coursegenerator'),
+        'question' => get_string('sectionquestion', 'local_coursegenerator'),
+    ];
+    $labels = [
+        'play' => get_string('tts_play', 'local_coursegenerator'),
+        'pause' => get_string('tts_pause', 'local_coursegenerator'),
+        'resume' => get_string('tts_resume', 'local_coursegenerator'),
+    ];
+
+    $PAGE->requires->js_call_amd('local_coursegenerator/tts', 'init', [$headings, $labels]);
+
+    return '';
+}

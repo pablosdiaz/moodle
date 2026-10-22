@@ -97,6 +97,14 @@ $string['success_quiz'] = 'Se ha creado el cuestionario "{$a->name}" con {$a->co
 $string['error_generation'] = 'Ha fallado la generación de contenido: {$a}';
 $string['error_aiempty'] = 'Gemini ha devuelto una respuesta vacía o no válida.';
 $string['error_aihttp'] = 'Gemini ha devuelto un error (HTTP {$a}).';
+$string['defaultquestion'] = '¿Qué aprendiste de este contenido?';
+
+// Secciones de la página generada.
+$string['sectioncontent'] = '📖 Contenido Educativo';
+$string['sectionquestion'] = '❓ Pregunta para Responder';
+$string['tts_play'] = '🔊 Leer en voz alta';
+$string['tts_pause'] = '⏸ Pausar';
+$string['tts_resume'] = '▶ Reanudar';
 
 // Navigation.
 $string['navnode'] = 'Generador de contenido IA';

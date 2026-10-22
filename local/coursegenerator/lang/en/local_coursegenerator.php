@@ -97,6 +97,14 @@ $string['success_quiz'] = 'Created the quiz "{$a->name}" with {$a->count} questi
 $string['error_generation'] = 'Content generation failed: {$a}';
 $string['error_aiempty'] = 'Gemini returned an empty or invalid response.';
 $string['error_aihttp'] = 'Gemini returned an error (HTTP {$a}).';
+$string['defaultquestion'] = 'What did you learn from this content?';
+
+// Generated page sections.
+$string['sectioncontent'] = '📖 Educational Content';
+$string['sectionquestion'] = '❓ Question to Answer';
+$string['tts_play'] = '🔊 Read aloud';
+$string['tts_pause'] = '⏸ Pause';
+$string['tts_resume'] = '▶ Resume';
 
 // Navigation.
 $string['navnode'] = 'AI content generator';
