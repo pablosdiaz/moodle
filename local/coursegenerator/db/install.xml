@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="local/coursegenerator/db" VERSION="20261022" COMMENT="XMLDB file for Moodle local/coursegenerator"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="local_coursegenerator_log" COMMENT="Log of AI content generation events, used for the admin report and for traceability">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course the content was generated for"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Teacher who requested the generation"/>
+        <FIELD NAME="contenttype" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="sections, page or quiz"/>
+        <FIELD NAME="itemname" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Human readable summary of what was created"/>
+        <FIELD NAME="itemcount" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Number of items generated (sections, questions...)"/>
+        <FIELD NAME="topic" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Prompt/topic given by the teacher"/>
+        <FIELD NAME="aimodel" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="10" NOTNULL="true" DEFAULT="success" SEQUENCE="false" COMMENT="success or error"/>
+        <FIELD NAME="errormessage" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="courseid" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="timecreated" UNIQUE="false" FIELDS="timecreated"/>
+        <INDEX NAME="contenttype" UNIQUE="false" FIELDS="contenttype"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>
