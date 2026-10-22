@@ -41,14 +41,6 @@ if ($hassiteconfig) {
         1
     ));
 
-    $settings->add(new admin_setting_configtext(
-        'local_coursegenerator/apiurl',
-        get_string('settings_apiurl', 'local_coursegenerator'),
-        get_string('settings_apiurl_desc', 'local_coursegenerator'),
-        'https://api.openai.com/v1/chat/completions',
-        PARAM_URL
-    ));
-
     $settings->add(new admin_setting_configpasswordunmask(
         'local_coursegenerator/apikey',
         get_string('settings_apikey', 'local_coursegenerator'),
@@ -60,7 +52,7 @@ if ($hassiteconfig) {
         'local_coursegenerator/model',
         get_string('settings_model', 'local_coursegenerator'),
         get_string('settings_model_desc', 'local_coursegenerator'),
-        'gpt-4o-mini',
+        'gemini-2.0-flash',
         PARAM_RAW_TRIMMED
     ));
 

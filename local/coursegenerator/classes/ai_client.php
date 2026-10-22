@@ -19,7 +19,7 @@ namespace local_coursegenerator;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Thin client for a chat-completions style external AI API (e.g. OpenAI).
+ * Thin client for the Google Gemini (Generative Language API) generateContent endpoint.
  *
  * @package    local_coursegenerator
  * @copyright  2026 Course generator
@@ -27,8 +27,8 @@ defined('MOODLE_INTERNAL') || die();
  */
 class ai_client {
 
-    /** @var string */
-    protected string $apiurl;
+    /** @var string Base URL of the Gemini Generative Language API. */
+    const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models/';
 
     /** @var string */
     protected string $apikey;
@@ -42,11 +42,10 @@ class ai_client {
      * @return self
      */
     public static function from_config(): self {
-        $apiurl = (string) get_config('local_coursegenerator', 'apiurl');
         $apikey = (string) get_config('local_coursegenerator', 'apikey');
         $model = (string) get_config('local_coursegenerator', 'model');
 
-        return new self($apiurl, $apikey, $model ?: 'gpt-4o-mini');
+        return new self($apikey, $model ?: 'gemini-2.0-flash');
     }
 
     /**
@@ -55,18 +54,15 @@ class ai_client {
      * @return bool
      */
     public static function is_configured(): bool {
-        $apiurl = (string) get_config('local_coursegenerator', 'apiurl');
         $apikey = (string) get_config('local_coursegenerator', 'apikey');
-        return $apiurl !== '' && $apikey !== '';
+        return $apikey !== '';
     }
 
     /**
-     * @param string $apiurl
      * @param string $apikey
      * @param string $model
      */
-    public function __construct(string $apiurl, string $apikey, string $model) {
-        $this->apiurl = $apiurl;
+    public function __construct(string $apikey, string $model) {
         $this->apikey = $apikey;
         $this->model = $model;
     }
@@ -81,8 +77,7 @@ class ai_client {
     }
 
     /**
-     * Ask the AI provider to produce JSON data matching the given instructions and
-     * decode the result.
+     * Ask Gemini to produce JSON data matching the given instructions and decode the result.
      *
      * @param string $systemprompt instructions describing the required JSON shape.
      * @param string $userprompt the actual request (topic, counts, etc).
@@ -90,29 +85,33 @@ class ai_client {
      * @throws \moodle_exception
      */
     public function generate_json(string $systemprompt, string $userprompt): array {
-        if (empty($this->apiurl) || empty($this->apikey)) {
+        if (empty($this->apikey)) {
             throw new \moodle_exception('form_noapikey', 'local_coursegenerator');
         }
 
         $payload = [
-            'model' => $this->model,
-            'messages' => [
-                ['role' => 'system', 'content' => $systemprompt],
-                ['role' => 'user', 'content' => $userprompt],
+            'contents' => [
+                ['role' => 'user', 'parts' => [['text' => $userprompt]]],
             ],
-            'temperature' => 0.7,
-            'response_format' => ['type' => 'json_object'],
+            'systemInstruction' => [
+                'parts' => [['text' => $systemprompt]],
+            ],
+            'generationConfig' => [
+                'temperature' => 0.7,
+                'responseMimeType' => 'application/json',
+            ],
         ];
+
+        $endpoint = self::BASE_URL . rawurlencode($this->model) . ':generateContent?key=' . rawurlencode($this->apikey);
 
         $curl = new \curl();
         $curl->setHeader('Content-Type: application/json');
-        $curl->setHeader('Authorization: Bearer ' . $this->apikey);
         $options = [
             'CURLOPT_TIMEOUT' => 90,
             'CURLOPT_CONNECTTIMEOUT' => 15,
         ];
 
-        $response = $curl->post($this->apiurl, json_encode($payload), $options);
+        $response = $curl->post($endpoint, json_encode($payload), $options);
         $info = $curl->get_info();
         $httpcode = (int) ($info['http_code'] ?? 0);
 
@@ -121,7 +120,7 @@ class ai_client {
         }
 
         $decoded = json_decode((string) $response, true);
-        $content = $decoded['choices'][0]['message']['content'] ?? null;
+        $content = $decoded['candidates'][0]['content']['parts'][0]['text'] ?? null;
 
         if ($content === null) {
             throw new \moodle_exception('error_aiempty', 'local_coursegenerator');

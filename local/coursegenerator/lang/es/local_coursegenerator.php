@@ -31,15 +31,13 @@ $string['coursegenerator:generate'] = 'Generar contenido con IA en un curso';
 $string['coursegenerator:viewreport'] = 'Ver el informe de generación de contenido con IA';
 
 // Settings.
-$string['settings_general'] = 'Configuración del proveedor de IA';
+$string['settings_general'] = 'Configuración de Google Gemini';
 $string['settings_enabled'] = 'Activar la generación de contenido';
 $string['settings_enabled_desc'] = 'Si se desactiva, los docentes no podrán generar contenido nuevo, pero el contenido existente y el informe seguirán funcionando.';
-$string['settings_apiurl'] = 'Endpoint de la API';
-$string['settings_apiurl_desc'] = 'Endpoint compatible con "chat completions", p. ej. https://api.openai.com/v1/chat/completions';
-$string['settings_apikey'] = 'Clave de la API';
-$string['settings_apikey_desc'] = 'Clave secreta usada para autenticarse ante el proveedor de IA. Manténgala privada.';
-$string['settings_model'] = 'Modelo';
-$string['settings_model_desc'] = 'Identificador del modelo a usar, p. ej. gpt-4o-mini.';
+$string['settings_apikey'] = 'Clave de la API de Gemini';
+$string['settings_apikey_desc'] = 'Clave secreta usada para autenticarse ante la API de Google Gemini. Consíguela en Google AI Studio (https://aistudio.google.com/app/apikey). Manténgala privada.';
+$string['settings_model'] = 'Modelo de Gemini';
+$string['settings_model_desc'] = 'Identificador del modelo de Gemini a usar, p. ej. gemini-2.0-flash.';
 $string['settings_maxsections'] = 'Máximo de secciones por petición';
 $string['settings_maxsections_desc'] = 'Límite superior del número de secciones que un docente puede generar en una sola petición.';
 $string['settings_maxquestions'] = 'Máximo de preguntas por petición';
@@ -75,6 +73,10 @@ $string['contenttype_quiz'] = 'Cuestionario';
 
 // Teacher panel.
 $string['teacherpanel'] = 'Generar contenido con IA';
+$string['selectcourse_heading'] = 'Generador de cursos con IA';
+$string['selectcourse_intro'] = 'Elige para cuál de tus cursos quieres generar contenido.';
+$string['nocourses'] = 'Todavía no eres docente en ningún curso, así que no hay nada para lo que generar contenido.';
+$string['opencourse'] = 'Generar contenido';
 $string['teacherpanel_heading'] = 'Generar contenido para {$a}';
 $string['teacherpanel_intro'] = 'Describe lo que necesitas y el generador de cursos IA lo creará directamente en tu curso.';
 $string['form_contenttype'] = '¿Qué quieres generar?';
@@ -86,15 +88,15 @@ $string['form_title'] = 'Título';
 $string['form_numquestions'] = 'Número de preguntas';
 $string['form_submit'] = 'Generar';
 $string['form_disabled'] = 'El generador de contenido con IA está actualmente desactivado por el administrador del sitio.';
-$string['form_noapikey'] = 'El administrador del sitio todavía no ha configurado una clave de API de IA. Por favor, contacta con él.';
+$string['form_noapikey'] = 'El administrador del sitio todavía no ha configurado una clave de API de Google Gemini. Por favor, contacta con él.';
 $string['newsection'] = 'Sección nueva (al final del curso)';
 $string['recentgenerations'] = 'Tus generaciones recientes en este curso';
 $string['success_sections'] = 'Se han creado {$a} sección(es) nueva(s).';
 $string['success_page'] = 'Se ha creado la página "{$a}".';
 $string['success_quiz'] = 'Se ha creado el cuestionario "{$a->name}" con {$a->count} pregunta(s).';
 $string['error_generation'] = 'Ha fallado la generación de contenido: {$a}';
-$string['error_aiempty'] = 'El proveedor de IA ha devuelto una respuesta vacía o no válida.';
-$string['error_aihttp'] = 'El proveedor de IA ha devuelto un error (HTTP {$a}).';
+$string['error_aiempty'] = 'Gemini ha devuelto una respuesta vacía o no válida.';
+$string['error_aihttp'] = 'Gemini ha devuelto un error (HTTP {$a}).';
 
 // Navigation.
 $string['navnode'] = 'Generador de contenido IA';

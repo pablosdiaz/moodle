@@ -25,6 +25,32 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
+ * Add a top-level "AI course generator" link to the main navigation, for any user who
+ * can generate content in at least one course.
+ *
+ * @param global_navigation $navigation
+ */
+function local_coursegenerator_extend_navigation(global_navigation $navigation) {
+    if (!isloggedin() || isguestuser()) {
+        return;
+    }
+
+    $courses = get_user_capability_course('local/coursegenerator:generate', null, true, '', '', 1);
+    if (empty($courses)) {
+        return;
+    }
+
+    $navigation->add(
+        get_string('navnode', 'local_coursegenerator'),
+        new moodle_url('/local/coursegenerator/index.php'),
+        navigation_node::TYPE_CUSTOM,
+        null,
+        'local_coursegenerator',
+        new pix_icon('i/report', '')
+    );
+}
+
+/**
  * Add a link to the AI course generator into the course navigation/administration menu.
  *
  * @param navigation_node $coursenode
