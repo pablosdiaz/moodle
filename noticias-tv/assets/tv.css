@@ -1,0 +1,135 @@
+:root {
+    --rojo: #e50914;
+    --fondo: #05070d;
+    --panel: #0e1320;
+    --texto: #ffffff;
+    --tenue: #a9b1c3;
+    --acento: var(--rojo);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    width: 100%; height: 100%;
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    overflow: hidden;
+    cursor: none;
+}
+
+/* Todo se escala con vmin/vw para verse igual en cualquier TV 16:9. */
+#tv {
+    display: grid;
+    grid-template-rows: 8vh 1fr 8vh;
+    width: 100vw; height: 100vh;
+}
+
+/* ---------- Barra superior ---------- */
+.barra-superior {
+    display: flex; align-items: center; gap: 2vw;
+    padding: 0 2.5vw;
+    background: linear-gradient(90deg, #111827, #0b0f1a);
+    border-bottom: .4vh solid var(--acento);
+    transition: border-color .8s;
+}
+.logo { font-size: 3.6vh; font-weight: 900; letter-spacing: .15em; display: flex; align-items: center; gap: 1vw; }
+.punto-vivo { width: 1.8vh; height: 1.8vh; border-radius: 50%; background: var(--rojo); animation: latido 1.4s infinite; }
+.en-vivo {
+    background: var(--rojo); padding: .5vh 1vw; border-radius: .4vh;
+    font-weight: 800; font-size: 2vh; letter-spacing: .2em;
+}
+.reloj { margin-left: auto; text-align: right; line-height: 1; }
+.reloj span { display: block; font-size: 4.2vh; font-weight: 700; font-variant-numeric: tabular-nums; }
+.reloj small { font-size: 1.7vh; color: var(--tenue); }
+
+@keyframes latido { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .3; transform: scale(.75); } }
+
+/* ---------- Escenario ---------- */
+.escenario { display: grid; grid-template-columns: 1fr 26vw; min-height: 0; }
+
+.principal { position: relative; overflow: hidden; background: var(--panel); }
+.imagen {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    animation: kenburns 14s ease-out forwards;
+}
+.imagen.sin-foto {
+    background: radial-gradient(circle at 30% 30%, var(--acento), #060912 70%);
+    animation: none; opacity: .55;
+}
+@keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.12); } }
+
+.degradado {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(3,5,10,.97) 0%, rgba(3,5,10,.75) 35%, rgba(3,5,10,0) 70%);
+}
+.contenido { position: absolute; left: 3.5vw; right: 3.5vw; bottom: 6vh; }
+.etiquetas { display: flex; gap: 1.2vw; align-items: center; margin-bottom: 2vh; }
+.fuente {
+    background: var(--acento); padding: .7vh 1.2vw; border-radius: .4vh;
+    font-size: 2.2vh; font-weight: 800; text-transform: uppercase; letter-spacing: .08em;
+}
+.hace { font-size: 2.2vh; color: var(--tenue); }
+#titulo {
+    font-size: 6.2vh; line-height: 1.12; font-weight: 800;
+    text-shadow: 0 .4vh 2vh rgba(0,0,0,.6);
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+#resumen {
+    margin-top: 2vh; font-size: 2.9vh; line-height: 1.35; color: #d8dce6; max-width: 90%;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.progreso { position: absolute; left: 0; right: 0; bottom: 0; height: .6vh; background: rgba(255,255,255,.12); }
+#barra { height: 100%; width: 0; background: var(--acento); }
+.contador { position: absolute; top: 2.5vh; right: 2vw; font-size: 1.9vh; color: var(--tenue); background: rgba(0,0,0,.45); padding: .5vh .8vw; border-radius: .4vh; }
+
+/* Transición entre noticias */
+.principal.saliendo .contenido { opacity: 0; transform: translateY(3vh); }
+.principal.saliendo .imagen { opacity: 0; }
+.contenido, .imagen { transition: opacity .6s ease, transform .6s ease; }
+
+/* ---------- Lista lateral ---------- */
+.siguientes { background: #0a0e18; padding: 3vh 1.6vw; overflow: hidden; border-left: 1px solid #1c2333; }
+.siguientes h2 { font-size: 2.2vh; letter-spacing: .2em; text-transform: uppercase; color: var(--tenue); margin-bottom: 2vh; }
+#lista { list-style: none; display: flex; flex-direction: column; gap: 1.6vh; }
+#lista li {
+    display: grid; grid-template-columns: 9vh 1fr; gap: 1vw; align-items: center;
+    padding-bottom: 1.6vh; border-bottom: 1px solid #1c2333;
+    animation: entrar .6s ease both;
+}
+#lista .mini { width: 9vh; height: 9vh; border-radius: .6vh; background: #1a2133 center/cover; }
+#lista .mini.sin-foto { background: linear-gradient(135deg, var(--c, #333), #111); }
+#lista b { display: block; font-size: 1.5vh; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .4vh; color: var(--c, var(--tenue)); }
+#lista span { font-size: 2vh; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+@keyframes entrar { from { opacity: 0; transform: translateX(2vw); } to { opacity: 1; transform: none; } }
+
+/* ---------- Zócalo (ticker) ---------- */
+.zocalo { display: flex; align-items: stretch; background: #f3f4f6; color: #0b0f1a; overflow: hidden; }
+.zocalo-etiqueta {
+    flex: none; display: flex; align-items: center; padding: 0 2vw;
+    background: var(--rojo); color: #fff; font-weight: 900; font-size: 2.6vh; letter-spacing: .08em;
+}
+.zocalo-pista { flex: 1; overflow: hidden; display: flex; align-items: center; }
+.zocalo-texto {
+    white-space: nowrap; font-size: 3vh; font-weight: 600;
+    padding-left: 100%;
+    animation: desplazar linear infinite;
+    animation-duration: var(--duracion, 120s);
+}
+.zocalo-texto em { font-style: normal; color: var(--rojo); font-weight: 900; margin: 0 1.5vw; }
+@keyframes desplazar { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+
+#aviso-pantalla {
+    position: fixed; top: 10vh; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,.8); padding: 1vh 2vw; border-radius: 1vh; font-size: 1.8vh;
+    transition: opacity 1s; pointer-events: none;
+}
+#aviso-pantalla.oculto { opacity: 0; }
+
+/* Pantallas verticales (tótems) */
+@media (orientation: portrait) {
+    .escenario { grid-template-columns: 1fr; grid-template-rows: 1fr 32vh; }
+    .siguientes { border-left: 0; border-top: 1px solid #1c2333; }
+    #titulo { font-size: 4.2vh; }
+}
